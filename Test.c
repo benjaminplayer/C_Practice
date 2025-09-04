@@ -10,6 +10,6 @@ int main()
     scanf("%d",&b);
     printf("diff %d", abs(b-a));
 
-
     return 0;
 }
+

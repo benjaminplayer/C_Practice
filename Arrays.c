@@ -167,33 +167,6 @@ int* removeDuplicates(int arr[], int len, int* newSize)
     return a;
 
 }
-/* TODO: FIX SHIFTING
-int* shiftElements(int arr[], int len, int val)
-{
-    if(abs(val) > len - 1)
-    {
-        printf("Incorrect value for shift: %d",val);
-        exit(1);
-    }
-
-    int* a = malloc(len * sizeof(int));
-
-    if(val > 0)
-    {
-        int k = val;
-        for(int i = 0; i < len; i++, k++)
-        {
-            if(k <= len-1)
-                a[i] = arr[k];
-            else
-            {
-                k = 0;
-            }
-        }
-    }
-
-    return a;
-}*/
 
 int main()
 {
