@@ -1,6 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+struct date
+{
+    unsigned short day;
+    unsigned short month;
+    short year;
+};
+
+struct person
+{
+    char name[30];
+    char surname[30];
+    struct date dob;
+};
+
 struct Student
 {
     unsigned int rollNumber;
@@ -10,11 +25,19 @@ struct Student
 
 struct complex
 {
-    int re;
-    int im;
-    int refrac;
-    int imfrac;
+    int re; // real part
+    int refrac; // real denuminator
+    int im; // imaginary part
+    int imfrac; // imaginary denuminator
 };
+
+struct book
+{
+    char title[30];
+    char author[50];
+    unsigned short price;
+};
+
 
 struct complex complexAdd(struct complex z1, struct complex z2)
 {
@@ -76,11 +99,12 @@ struct complex complexDiv(struct complex z1, struct complex z2)
 {
     struct complex result;
     //result = complexMult(z1,conjugate(z2)) / ((z2.re * z2.re)+(z2.im*z2.im));
-    if(z2.re == 0 && z1.im == 0)
+    if(z2.re == 0 && z2.im == 0)
     {
         printf("Cannot divide by 0");
         exit(1);
     }
+
     result.refrac = z2.re*z2.re + z2.im * z2.im; // calc the fraction
     result.imfrac = result.refrac;
     result.re = z1.re * z2.re + z1.im * z2.im;
@@ -107,7 +131,7 @@ struct complex printComplex(struct complex z)
         else if(z.imfrac != 0)
             printf("%d %c %d/%di",z.re,operator,abs(z.im),z.imfrac);
         else
-        printf("%d %c %di",z.re,operator,abs(z.im)); // general output if a num is not a fraction
+            printf("%d %c %di",z.re,operator,abs(z.im)); // general output if a num is not a fraction
     } 
 }
 
@@ -181,6 +205,35 @@ void printStudentsInfo(struct Student *arr, int len)
 
 }
 
+void searchBookByTitle(struct book *lib, int len, char title[])
+{
+    for(int i = 0; i < len; i++)
+    {
+        if(strcmp(lib[i].title, title) == 0)
+        {
+            printf("Book: %s\nAuthor: %s\nPrice: %hu\n",
+                   lib[i].title, lib[i].author, lib[i].price);
+            return;
+        }
+    }
+    printf("Book not found!\n");
+}
+
+void printDate(struct date d)
+{
+    printf("%d/%d/%d",d.day,d.month,d.year);
+}
+
+void printPerson(struct person p)
+{
+    printf("Name: %s, Surname: %s, Date of birth: %d/%d/%d",p.name, p.surname,p.dob.day,p.dob.month,p.dob.year);
+}
+
+void changeName(struct person *p, char name[])
+{
+    strcpy(p->name,name);
+}
+
 int main()
 {
 /*
@@ -211,12 +264,39 @@ int main()
     students[0].grade = 2;
     strcpy(students[0].name, "Lola");*/
 
-    struct complex z1 = {20,-4};
-    struct complex z2 = {3,2};
+    /*struct complex z1 = {20,-4};
+    struct complex z2 = {3,0,1};
     struct complex z3 = {2,4,0,3};
     struct complex z4 = {4,2,3,0};
     printf("Complex div:\n");
     //struct complex z3 = complexDiv(z1,z2);
-    printComplex(z4);
+    printComplex(z2);*/
 
+    /*struct book library[4];
+    strcpy(library[0].title, "The C Programming Language");
+    strcpy(library[0].author, "Kernighan & Ritchie");
+    library[0].price = 50;
+
+    strcpy(library[1].title, "Clean Code");
+    strcpy(library[1].author, "Robert C. Martin");
+    library[1].price = 40;
+
+    strcpy(library[2].title, "Na Klancu");
+    strcpy(library[2].author, "Ivan");
+    library[2].price = 10;
+
+    strcpy(library[3].title, "The Silver Eyes");
+    strcpy(library[3].author, "Scott Cawthon");
+    library[3].price = 15;
+
+    printf("Enter the books title\n");
+    char name[] = "";
+    fgets(name, 50, stdin);
+    name[strcspn(name, "\n")] = '\0'; // -> ker fgets doda \n na konec line strcspm(name,\n) dobi index od \n in ga zamenja z \0
+    printf("Name:%s\n",name);
+    searchBookByTitle(library,4,name);*/
+    struct date d = {12,12,2000};
+    struct person p = {"Test","Sest",d};
+
+    printPerson(p);
 }
