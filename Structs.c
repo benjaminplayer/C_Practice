@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 struct Student
 {
@@ -11,7 +12,8 @@ struct complex
 {
     int re;
     int im;
-    int frac;
+    int refrac;
+    int imfrac;
 };
 
 struct complex complexAdd(struct complex z1, struct complex z2)
@@ -44,24 +46,69 @@ struct complex conjugate(struct complex z1)
     return z1;
 }
 
+int gcd(int a, int b)
+{
+    while (b !=0)
+    {
+        int r = a % b;
+        a = b;
+        b = r;
+    }
+    
+    return a;
+}
+
+struct complex simplify(struct complex z)
+{
+    struct complex f;
+    int rgcd = gcd(z.re, z.refrac);
+    int igcd = gcd(z.im, z.imfrac);
+
+    f.re = z.re / rgcd;
+    f.refrac = z.refrac / rgcd;
+    f.im = z.im / igcd;
+    f.imfrac = z.imfrac / igcd;
+    return f;
+}
+
 //TODO Poenostavi imenovalc
 struct complex complexDiv(struct complex z1, struct complex z2)
 {
     struct complex result;
     //result = complexMult(z1,conjugate(z2)) / ((z2.re * z2.re)+(z2.im*z2.im));
-    result.frac = z2.re*z2.re + z2.im * z2.im; // calc the fraction
+    if(z2.re == 0 && z1.im == 0)
+    {
+        printf("Cannot divide by 0");
+        exit(1);
+    }
+    result.refrac = z2.re*z2.re + z2.im * z2.im; // calc the fraction
+    result.imfrac = result.refrac;
     result.re = z1.re * z2.re + z1.im * z2.im;
-    result.im = z1.im * z2.re - z1.re * z2.im;
-
-    return result;
+    result.im = z1.im * z2.re - z1.re * z2.im; 
+    return simplify(result);
 }
 
 struct complex printComplex(struct complex z)
 {
-    if(z.frac != NULL)
-        printf("%d/%d + %d/%di",z.re,z.frac,z.im,z.frac);
+    char operator = (z.im > 0)? '+':'-';
+    if((z.refrac != 0 && z.imfrac != 0) && !(z.refrac == 1 && z.imfrac == 1)) // both frac and not x/1
+    {
+        if(z.refrac == 1)
+            printf("%d %c %d/%di",z.re,operator,abs(z.im),z.imfrac);
+        else if(z.imfrac == 1)
+            printf("%d/%d %c %di",z.re,z.refrac,operator,abs(z.im));
+        else
+            printf("%d/%d %c %d/%di",z.re,z.refrac,operator,abs(z.im),z.imfrac);
+    } 
     else
-        printf("%d %di",z.re,z.im);
+    {
+        if(z.refrac != 0)
+            printf("%d/%d %c %di",z.re,z.refrac,operator,abs(z.im));
+        else if(z.imfrac != 0)
+            printf("%d %c %d/%di",z.re,operator,abs(z.im),z.imfrac);
+        else
+        printf("%d %c %di",z.re,operator,abs(z.im)); // general output if a num is not a fraction
+    } 
 }
 
 void findHighestAndLowestGrades(int len, struct Student *arr)
@@ -166,8 +213,10 @@ int main()
 
     struct complex z1 = {20,-4};
     struct complex z2 = {3,2};
-
+    struct complex z3 = {2,4,0,3};
+    struct complex z4 = {4,2,3,0};
     printf("Complex div:\n");
-    struct complex z3 = complexDiv(z1,z2);
-    printComplex(z3);
+    //struct complex z3 = complexDiv(z1,z2);
+    printComplex(z4);
+
 }
